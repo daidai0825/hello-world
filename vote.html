@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="BIG5">
+<title>中午吃啥</title>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+</head>
+<body style="text-align: center;">
+	<h1>中午吃啥</h1>
+	<button onclick="searchVote()" style = "font-size: 20px;">吃啥?</button>
+	<br/>
+	
+	<div style="width: 50%;margin: 0px auto;text-align: left;border: 1px solid;padding: 20px;">
+		<label>姓名:</label><input type="text" id="insertId">
+		<label>午餐:</label><input type="text" id="targetId">
+		<button onclick="vote()" style="float: right;font-size: 20px;">決定</button>
+	</div>
+	
+	
+	<div style="width: 50%;margin: 0px auto;text-align: left;border: 1px solid;padding: 20px;">
+		<label>姓名:</label><input type="text" id="searchId">
+		<button onclick="searchVoteByID()" style="float: right;font-size: 20px;">查詢</button>
+	</div>
+	
+	
+	<div id="showVote" style="width: 50%;margin: 0px auto;text-align: left;border: 1px solid;padding: 20px;">
+	</div>
+	<script>
+		function searchVote() {
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		      document.getElementById("showVote").innerHTML = this.responseText;
+		    }
+		  };
+		  xhttp.open("GET", "https://tubyrw5jri.execute-api.us-west-2.amazonaws.com/vote/vote", true);
+		  xhttp.send();
+		}
+		function searchVoteByID() {
+		  var searchid=document.getElementById("searchId").value;
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		      document.getElementById("showVote").innerHTML = this.responseText;
+		    }else{
+		      document.getElementById("showVote").innerHTML = this.responseText;
+		    }
+		  };
+		  xhttp.open("GET", "https://tubyrw5jri.execute-api.us-west-2.amazonaws.com/vote/vote/"+searchid, true);
+		  xhttp.send();
+		}
+		function vote() {
+		  var searchid=document.getElementById("insertId").value;
+		  var targetid=document.getElementById("targetId").value;
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.open("POST", "https://tubyrw5jri.execute-api.us-west-2.amazonaws.com/vote/vote");
+		  xhttp.setRequestHeader("Content-Type", "application/json");
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		      document.getElementById("showVote").innerHTML = this.responseText;
+		    }else{
+		      document.getElementById("showVote").innerHTML = this.responseText;
+		    }
+		  };
+		  xhttp.send(JSON.stringify({source_id:searchid, target_id:targetid}));
+
+		}
+		function send() {
+			var searchid=document.getElementById("insertId").value;
+			var targetid=document.getElementById("targetId").value;
+	        var vote = {
+	        	source_id:searchid,
+	        	target_id:targetid
+	        }
+
+	        $('#showVote').html('sending..');
+
+	        $.ajax({
+	            url: 'https://tubyrw5jri.execute-api.us-west-2.amazonaws.com/vote/vote',
+	            type: 'post',
+	            dataType: 'application/json',
+	            success: function (data) {
+	                $('#showVote').html(data.msg);
+	            },
+	            data: JSON.stringify(vote)
+	        });
+	    }
+	</script>
+</body>
+</html>
